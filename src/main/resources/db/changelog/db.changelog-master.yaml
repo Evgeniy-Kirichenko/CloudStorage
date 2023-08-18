@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - include:
+      file: /db/changelog/table/files.sql
+      relativeToChangeLogFile: true
+  - include:
+      file: /db/changelog/table/users.sql
+      relativeToChangeLogFile: true
+  - include:
+      file: /db/changelog/table/roles.sql
+      relativeToChangeLogFile: true
+  - include:
+      file: /db/changelog/table/token.sql
+      relativeToChangeLogFile: true
+  - include:
+      file: /db/changelog/table/users_roles.sql
+      relativeToChangeLogFile: true
+  - include:
+      file: /db/changelog/table/insert_role.sql
+      relativeToChangeLogFile: true
+  - include:
+      file: /db/changelog/table/insert_role_2.sql
+      relativeToChangeLogFile: true
+  - include:
+      file: /db/changelog/table/insert_users.sql
+      relativeToChangeLogFile: true
+  - include:
+      file: /db/changelog/tables/insert_users_role.sql
+      relativeToChangeLogFile: true
+
