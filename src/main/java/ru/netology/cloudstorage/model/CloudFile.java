@@ -44,4 +44,13 @@ public class CloudFile {
     @ManyToOne
     @JoinColumn(name = "owner", referencedColumnName = "username")
     User owner;
+
+    public CloudFile(LocalDateTime localDateTime, String fileName, String fileType, long size, byte[] bytes, User owner) {
+        this.localDateTime = localDateTime;
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.size = size;
+        this.bytes = bytes;
+        this.owner = owner;
+    }
 }

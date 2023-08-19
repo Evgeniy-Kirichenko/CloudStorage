@@ -3,6 +3,7 @@ package ru.netology.cloudstorage.service;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import ru.netology.cloudstorage.model.User;
 import ru.netology.cloudstorage.repository.TokenUserRepository;
 import ru.netology.cloudstorage.utils.JwtTokenUtils;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -41,11 +42,13 @@ public class AuthenticationService {
         }
         UserDetails userDetails = userService.loadUserByUsername(authenticationRQ.getLogin());
         String authToken = jwtTokenUtils.generateToken(userDetails);
+        log.info("Пользователь {} авторизован. Токен: {}",authenticationRQ.getLogin(), authToken);
         tokenUserRepository.save(new TokenUser(userDetails.getUsername(), authToken));
         return ResponseEntity.ok(new AuthenticationRS(authToken));
     }
     public void logout(String authToken) {
         tokenUserRepository.deleteByAuthToken(authToken);
+
     }
 
 }
