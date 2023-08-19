@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  app_frontend:
+    build:
+      context: ./netology-diplom-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
