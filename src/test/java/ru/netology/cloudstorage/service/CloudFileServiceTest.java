@@ -40,11 +40,11 @@ public class CloudFileServiceTest {
 
     @Test
     void uploadFile() throws IOException {
-        assertTrue(cloudFileService.uploadFile(BEARER_TOKEN, FILENAME_1, MULTIPART_FILE));
+        assertTrue(cloudFileService.uploadFile(BEARER_TOKEN, FILENAME_1, MULTIPART_FILE.getContentType(),MULTIPART_FILE.getSize(), MULTIPART_FILE.getBytes()));
     }
     @Test
     void uploadFileUnauthorized() {
-        assertThrows(UnauthorizedException.class, () -> cloudFileService.uploadFile(TOKEN_1, FILENAME_1, MULTIPART_FILE));
+        assertThrows(UnauthorizedException.class, () -> cloudFileService.uploadFile(TOKEN_1, FILENAME_1, MULTIPART_FILE.getContentType(),MULTIPART_FILE.getSize(), MULTIPART_FILE.getBytes()));
     }
     @Test
     void deleteFile() {

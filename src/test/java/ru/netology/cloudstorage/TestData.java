@@ -73,6 +73,7 @@ public class TestData {
     public static final String FILENAME_2 = "Filename2";
     public static final byte[] FILE_CONTENT_2 = FILENAME_2.getBytes();
     public static final MultipartFile MULTIPART_FILE = new MockMultipartFile(FILENAME_2, FILE_CONTENT_2);
+
     public static final Long SIZE_1 = 100L;
 
     public static final byte[] FILE_CONTENT_1 = FILENAME_1.getBytes();

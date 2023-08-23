@@ -4,26 +4,21 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.dto.request.EditFileNameRQ;
 import ru.netology.cloudstorage.dto.response.FileRS;
 import ru.netology.cloudstorage.exception.CloudFileException;
 import ru.netology.cloudstorage.exception.InputDataException;
 import ru.netology.cloudstorage.exception.UnauthorizedException;
 import ru.netology.cloudstorage.model.CloudFile;
-import ru.netology.cloudstorage.model.TokenUser;
 import ru.netology.cloudstorage.model.User;
 import ru.netology.cloudstorage.repository.CloudFileRepository;
 import ru.netology.cloudstorage.repository.TokenUserRepository;
 import ru.netology.cloudstorage.repository.UserRepository;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,25 +31,20 @@ public class CloudFileService {
     TokenUserRepository tokenUserRepository;
 
     @Transactional(rollbackFor = Exception.class)
-    public boolean uploadFile(String authToken, String fileName, MultipartFile file) {
+    public boolean uploadFile(String authToken, String fileName, String contentType, long size, byte[] bytes) {
         final User user = getUserByAuthToken(authToken);
         if (user == null) {
             log.error("Добавление файла невозможно. Вы не авторизованны");
             throw new UnauthorizedException("Добавление файла невозможно. Вы не авторизованны");
         }
-        if (file.isEmpty()) {
+        if (size == 0) {
             log.error("файл не может быть пустым");
             throw new CloudFileException("Файл не может быть пустым");
         }
 
-        try {
-            cloudFileRepository.save(new CloudFile(LocalDateTime.now(), fileName, file.getContentType(),
-                    file.getSize(), file.getBytes(), user));
-            log.info("Файл успешно добавлен.Пользователь {}", user.getUsername());
-        } catch (IOException e) {
-            log.error("Ошибка загрузки файла.Пользователь {}", user.getUsername());
-            throw new RuntimeException("Ошибка загрузки файла");
-        }
+        cloudFileRepository.save(new CloudFile(LocalDateTime.now(), fileName, contentType,
+                size, bytes, user));
+        log.info("Файл успешно добавлен.Пользователь {}", user.getUsername());
         return true;
     }
 
@@ -95,16 +85,16 @@ public class CloudFileService {
     }
 
     @Transactional
-    public void editFileName(String authToken, String fileName, EditFileNameRQ editFileNameRQ) {
+    public void editFileName(String authToken, String fileName, String editFileName) {
         final User user = getUserByAuthToken(authToken);
         if (user == null) {
             log.error("Переименование файла невозможно. Вы не авторизованны");
             throw new UnauthorizedException("Переименование файла невозможно. Вы не авторизованны");
         }
         CloudFile cloudFile = cloudFileRepository.findByOwnerAndFileName(user, fileName);
-        cloudFile.setFileName(editFileNameRQ.getFileName());
+        cloudFile.setFileName(editFileName);
         cloudFileRepository.save(cloudFile);
-        log.info("Файл {} успешно переименован в {}. Пользователь {}",fileName,editFileNameRQ.getFileName(),user.getUsername());
+        log.info("Файл {} успешно переименован в {}. Пользователь {}",fileName,editFileName,user.getUsername());
     }
 
 

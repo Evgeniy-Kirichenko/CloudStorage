@@ -3,12 +3,10 @@ package ru.netology.cloudstorage.controller;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.dto.request.EditFileNameRQ;
@@ -29,7 +27,8 @@ public class CloudFileController {
     @PostMapping("/file")
     public ResponseEntity<?> uploadFile(@RequestHeader("auth-token") String authToken,
                                         @RequestParam("filename") String fileName, MultipartFile file) throws IOException {
-        cloudFileService.uploadFile(authToken, fileName, file);
+
+        cloudFileService.uploadFile(authToken, fileName, file.getContentType(), file.getSize(), file.getBytes());
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -58,7 +57,7 @@ public class CloudFileController {
     public ResponseEntity<?> editFileName(@RequestHeader("auth-Token") String authToken,
                                           @RequestParam("filename") String fileName,
                                           @RequestBody EditFileNameRQ editFileNameRQ) {
-        cloudFileService.editFileName(authToken, fileName, editFileNameRQ);
+        cloudFileService.editFileName(authToken, fileName, editFileNameRQ.getFileName());
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
