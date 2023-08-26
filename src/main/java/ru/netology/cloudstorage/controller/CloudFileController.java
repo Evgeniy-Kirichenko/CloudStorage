@@ -27,10 +27,13 @@ public class CloudFileController {
     @PostMapping("/file")
     public ResponseEntity<?> uploadFile(@RequestHeader("auth-token") String authToken,
                                         @RequestParam("filename") String fileName, MultipartFile file) throws IOException {
-
-        cloudFileService.uploadFile(authToken, fileName, file.getContentType(), file.getSize(), file.getBytes());
+        String contentType = file.getContentType();
+        long size = file.getSize();
+        byte[] bytes = file.getBytes();
+        cloudFileService.uploadFile(authToken, fileName, contentType, size, bytes);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
 
     @DeleteMapping("/file")
     public ResponseEntity<?> deleteFile(@RequestHeader("auth-token") String authToken,
@@ -57,7 +60,8 @@ public class CloudFileController {
     public ResponseEntity<?> editFileName(@RequestHeader("auth-Token") String authToken,
                                           @RequestParam("filename") String fileName,
                                           @RequestBody EditFileNameRQ editFileNameRQ) {
-        cloudFileService.editFileName(authToken, fileName, editFileNameRQ.getFileName());
+        String fileName1 = editFileNameRQ.getFileName();
+        cloudFileService.editFileName(authToken, fileName, fileName1);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
