@@ -15,6 +15,7 @@ import ru.netology.cloudstorage.service.CloudFileService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/")
@@ -53,8 +54,9 @@ public class CloudFileController {
     @GetMapping("/list")
     public List<FileRS> getAllFile(@RequestHeader("auth-token") String authToken,
                                    @RequestParam("limit") int limit) {
-        return cloudFileService.getAllFileUser(authToken, limit);
-    }
+        return cloudFileService.getAllFileUser(authToken, limit).stream().limit(limit).map(o ->
+                new FileRS(o.getFileName(), o.getSize())).collect(Collectors.toList());
+        }
 
     @PutMapping("/file")
     public ResponseEntity<?> editFileName(@RequestHeader("auth-Token") String authToken,

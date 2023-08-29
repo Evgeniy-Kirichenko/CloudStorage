@@ -74,14 +74,13 @@ public class CloudFileService {
         return file.getBytes();
     }
 
-    public List<FileRS> getAllFileUser(String authToken, int limit) {
+    public List<CloudFile> getAllFileUser(String authToken, int limit) {
         final User user = getUserByAuthToken(authToken);
         if (user == null) {
             log.error("Поиск файлов невозможен. Вы не авторизованны");
             throw new UnauthorizedException("Поиск файлов невозможен. Вы не авторизованны");
         }
-        return cloudFileRepository.findAllByOwner(user).stream().limit(limit).map(o ->
-                new FileRS(o.getFileName(), o.getSize())).collect(Collectors.toList());
+        return cloudFileRepository.findAllByOwner(user);
     }
 
     @Transactional
@@ -94,7 +93,7 @@ public class CloudFileService {
         CloudFile cloudFile = cloudFileRepository.findByOwnerAndFileName(user, fileName);
         cloudFile.setFileName(editFileName);
         cloudFileRepository.save(cloudFile);
-        log.info("Файл {} успешно переименован в {}. Пользователь {}",fileName,editFileName,user.getUsername());
+        log.info("Файл {} успешно переименован в {}. Пользователь {}", fileName, editFileName, user.getUsername());
     }
 
 

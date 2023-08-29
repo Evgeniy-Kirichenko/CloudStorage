@@ -86,6 +86,6 @@ public class TestData {
     public static final List<CloudFile> STORAGE_FILE_LIST = List.of(STORAGE_FILE_1, STORAGE_FILE_2);
     public static final FileRS FILE_RS_1 = new FileRS(FILENAME_1, SIZE_1);
     public static final FileRS FILE_RS_2 = new FileRS(FILENAME_2, SIZE_2);
-    public static final List<FileRS> FILE_RS_LIST = List.of(FILE_RS_1, FILE_RS_2);
+    public static final List<CloudFile> FILE_RS_LIST = List.of(STORAGE_FILE_1, STORAGE_FILE_2);
     public static final Integer LIMIT = 100;
 }

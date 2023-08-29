@@ -1,6 +1,6 @@
 databaseChangeLog:
   - include:
-      file: liquibase/table/files.sql
+      file: /liquibase/table/files.sql
       relativeToChangeLogFile: true
   - include:
       file: /liquibase/table/users.sql
