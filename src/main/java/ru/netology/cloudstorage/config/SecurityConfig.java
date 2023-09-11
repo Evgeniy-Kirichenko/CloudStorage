@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/file").authenticated()
                 .antMatchers("/list").authenticated()
+                .antMatchers("/logout").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

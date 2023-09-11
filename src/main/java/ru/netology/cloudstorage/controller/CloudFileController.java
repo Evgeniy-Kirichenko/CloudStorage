@@ -56,14 +56,14 @@ public class CloudFileController {
                                    @RequestParam("limit") int limit) {
         return cloudFileService.getAllFileUser(authToken, limit).stream().limit(limit).map(o ->
                 new FileRS(o.getFileName(), o.getSize())).collect(Collectors.toList());
-        }
+    }
 
     @PutMapping("/file")
     public ResponseEntity<?> editFileName(@RequestHeader("auth-Token") String authToken,
                                           @RequestParam("filename") String fileName,
                                           @RequestBody EditFileNameRQ editFileNameRQ) {
-        String fileName1 = editFileNameRQ.getFileName();
-        cloudFileService.editFileName(authToken, fileName, fileName1);
+        String newFileName = editFileNameRQ.getFileName();
+        cloudFileService.editFileName(authToken, fileName, newFileName);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }

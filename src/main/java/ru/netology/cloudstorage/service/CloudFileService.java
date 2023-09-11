@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.netology.cloudstorage.dto.request.EditFileNameRQ;
 import ru.netology.cloudstorage.dto.response.FileRS;
 import ru.netology.cloudstorage.exception.CloudFileException;
 import ru.netology.cloudstorage.exception.InputDataException;
@@ -84,16 +83,16 @@ public class CloudFileService {
     }
 
     @Transactional
-    public void editFileName(String authToken, String fileName, String editFileName) {
+    public void editFileName(String authToken, String fileName, String newFileName) {
         final User user = getUserByAuthToken(authToken);
         if (user == null) {
             log.error("Переименование файла невозможно. Вы не авторизованны");
             throw new UnauthorizedException("Переименование файла невозможно. Вы не авторизованны");
         }
         CloudFile cloudFile = cloudFileRepository.findByOwnerAndFileName(user, fileName);
-        cloudFile.setFileName(editFileName);
+        cloudFile.setFileName(newFileName);
         cloudFileRepository.save(cloudFile);
-        log.info("Файл {} успешно переименован в {}. Пользователь {}", fileName, editFileName, user.getUsername());
+        log.info("Файл {} успешно переименован в {}. Пользователь {}", fileName, newFileName, user.getUsername());
     }
 
 

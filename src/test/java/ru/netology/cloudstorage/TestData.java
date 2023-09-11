@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudstorage.dto.request.AuthenticationRQ;
-import ru.netology.cloudstorage.dto.request.EditFileNameRQ;
+//import ru.netology.cloudstorage.dto.request.EditFileNameRQ;
 import ru.netology.cloudstorage.dto.response.AuthenticationRS;
 import ru.netology.cloudstorage.dto.response.FileRS;
 import ru.netology.cloudstorage.model.CloudFile;
@@ -77,9 +77,10 @@ public class TestData {
     public static final Long SIZE_1 = 100L;
 
     public static final byte[] FILE_CONTENT_1 = FILENAME_1.getBytes();
-    public static final CloudFile STORAGE_FILE_1 = new CloudFile(1L, LocalDateTime.now(), FILENAME_1, null, SIZE_1, FILE_CONTENT_1, USER_1);
+    public static final CloudFile STORAGE_FILE_1 = new CloudFile(1L, LocalDateTime.now(), FILENAME_1,"text/plain", SIZE_1, FILE_CONTENT_1, USER_1);
     public static final String NEW_FILENAME = "NewFilename";
-    public static final EditFileNameRQ EDIT_FILE_NAME_RQ = new EditFileNameRQ(NEW_FILENAME);
+
+    // public static final EditFileNameRQ EDIT_FILE_NAME_RQ = new EditFileNameRQ(NEW_FILENAME);
     public static final Long SIZE_2 = 101L;
     public static final User USER_2 = new User(2L, USERNAME_2, PASSWORD_2, new ArrayList<>());
     public static final CloudFile STORAGE_FILE_2 = new CloudFile(2L, LocalDateTime.now(), FILENAME_2, null, SIZE_2, FILE_CONTENT_2, USER_2);

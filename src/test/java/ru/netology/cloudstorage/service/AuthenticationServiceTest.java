@@ -18,7 +18,7 @@ import static ru.netology.cloudstorage.TestData.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class AuthenticationServiceTest {
+class AuthenticationServiceTest {
     @InjectMocks
     private AuthenticationService authenticationService;
     @Mock

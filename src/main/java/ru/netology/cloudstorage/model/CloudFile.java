@@ -27,7 +27,7 @@ public class CloudFile {
     LocalDateTime localDateTime;
 
     @Column(name = "file_name")
-    @NotBlank
+ //  @NotBlank
     String fileName;
 
     @Column(name = "file_type", nullable = false)
