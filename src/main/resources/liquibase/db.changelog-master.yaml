@@ -1,29 +1,29 @@
 databaseChangeLog:
   - include:
-      file: /liquibase/table/files.sql
+      file: liquibase/changelog/users.sql
       relativeToChangeLogFile: true
   - include:
-      file: /liquibase/table/users.sql
+      file: liquibase/changelog/roles.sql
       relativeToChangeLogFile: true
   - include:
-      file: /liquibase/table/roles.sql
+      file: liquibase/changelog/users_roles.sql
       relativeToChangeLogFile: true
   - include:
-      file: /liquibase/table/token.sql
+      file: liquibase/changelog/insert_roles.sql
       relativeToChangeLogFile: true
   - include:
-      file: /liquibase/table/users_roles.sql
+      file: liquibase/changelog/insert_roles_2.sql
       relativeToChangeLogFile: true
   - include:
-      file: /liquibase/table/insert_role.sql
+      file: liquibase/changelog/insert_users.sql
       relativeToChangeLogFile: true
   - include:
-      file: /liquibase/table/insert_role_2.sql
+      file: liquibase/changelog/token.sql
       relativeToChangeLogFile: true
   - include:
-      file: /liquibase/table/insert_users.sql
+      file: liquibase/changelog/insert_users_roles.sql
       relativeToChangeLogFile: true
   - include:
-      file: /liquibase/tables/insert_users_role.sql
+      file: liquibase/changelog/files.sql
       relativeToChangeLogFile: true
 
