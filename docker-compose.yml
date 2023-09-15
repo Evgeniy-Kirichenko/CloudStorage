@@ -17,9 +17,9 @@ services:
 #      SPRING_DATASOURCE_USERNAME: root
 #      SPRING_DATASOURCE_PASSWORD: mysql
 #      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-##      SPRING_LIQUIBASE_URL: jdbc:mysql://database:3306/cloud
-##      SPRING_LIQUIBASE_USER: root
-##      SPRING_LIQUIBASE_PASSWORD: mysql
+#      SPRING_LIQUIBASE_URL: jdbc:mysql://database:3306/cloud
+#      SPRING_LIQUIBASE_USER: root
+#     SPRING_LIQUIBASE_PASSWORD: mysql
 
   database:
     image: mysql
