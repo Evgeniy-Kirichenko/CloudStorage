@@ -22,6 +22,8 @@ import ru.netology.cloudstorage.model.User;
 import ru.netology.cloudstorage.repository.TokenUserRepository;
 import ru.netology.cloudstorage.utils.JwtTokenUtils;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class AuthenticationService {
     private final UserService userService;
     private final JwtTokenUtils jwtTokenUtils;
 
-    public ResponseEntity<?> login(@RequestBody @NotNull AuthenticationRQ authenticationRQ){
+    public ResponseEntity<?> login(@RequestBody @NotNull AuthenticationRQ authenticationRQ) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRQ.getLogin(), authenticationRQ.getPassword()));
@@ -42,14 +44,17 @@ public class AuthenticationService {
         }
         UserDetails userDetails = userService.loadUserByUsername(authenticationRQ.getLogin());
         String authToken = jwtTokenUtils.generateToken(userDetails);
-        log.info("Пользователь {} авторизован. Токен: {}",authenticationRQ.getLogin(), authToken);
+        log.info("Пользователь {} авторизован. Токен: {}", authenticationRQ.getLogin(), authToken);
         tokenUserRepository.save(new TokenUser(userDetails.getUsername(), authToken));
         return ResponseEntity.ok(new AuthenticationRS(authToken));
     }
-    public void logout(String authToken) {
-        tokenUserRepository.deleteByAuthToken(authToken);
 
+    public void logout(String authToken) {
+        final String authTokenWithoutBearer = authToken.split(" ")[1];
+        Optional<TokenUser> byAuthToken = tokenUserRepository.findByAuthToken(authTokenWithoutBearer);
+        tokenUserRepository.deleteById(byAuthToken.get().getId());
     }
 
 }
+
 
