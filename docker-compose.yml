@@ -1,25 +1,16 @@
 version: '3.7'
 
 services:
-
-#  server:
-#    image: backend
-#    container_name: 'cloud-storage-service'
-#    build: ./
-#    ports:
-#      - "5050:5050"
-#    depends_on:
-#      - database
-#    networks:
-#      - cloud-storage
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/cloud
-#      SPRING_DATASOURCE_USERNAME: root
-#      SPRING_DATASOURCE_PASSWORD: mysql
-#      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-#      SPRING_LIQUIBASE_URL: jdbc:mysql://database:3306/cloud
-#      SPRING_LIQUIBASE_USER: root
-#     SPRING_LIQUIBASE_PASSWORD: mysql
+  app:
+    container_name: 'cloud-storage-service'
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "5050:5050"
+    depends_on:
+      database:
+        condition: service_healthy
 
   database:
     image: mysql
@@ -33,6 +24,11 @@ services:
       MYSQL_DATABASE: cloud
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   mysql_data:

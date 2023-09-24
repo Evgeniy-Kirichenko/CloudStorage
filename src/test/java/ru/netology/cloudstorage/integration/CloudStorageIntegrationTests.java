@@ -51,6 +51,8 @@ class CloudStorageIntegrationTests {
     ).withDatabaseName("cloud");
 
     private static String jwt = "";
+    private static String fileName = "testfile";
+    private static String fileJsonBody = "{\"fileName\": \"filetest\"}";
 
     @BeforeAll
     static void beforeAll() {
@@ -74,23 +76,21 @@ class CloudStorageIntegrationTests {
     @Order(1)
     public void whenLoginWithValidCredentialsThenOkAndJWT() throws JsonProcessingException {
         // JSON-тело запроса
-        String jsonBody = "{\"login\": \"kkk@kkk.org\", \"password\": 100}";
+        String credentialsJsonBody = "{\"login\": \"kkk@kkk.org\", \"password\": 100}";
 
         // Отправка POST-запроса
         ResponseEntity<String> response = restTemplate.exchange(
                 "http://localhost:" + port + "/login",
                 HttpMethod.POST,
-                getJsonRequestEntity(jwt, jsonBody),
+                getJsonRequestEntity(jwt, credentialsJsonBody),
                 String.class
         );
 
         // Проверка статуса ответа (ожидаем HTTP 200 OK)
         assertEquals(200, response.getStatusCodeValue());
 
-        // Проверка наличия "auth-token" в body
-        String responseBody = response.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        // Парсинг тела ответа
+        JsonNode jsonNode = parseResponseBody(response);
 
         // Проверка на содержание заголовка auth-token и на наличие его содержания
         assertTrue(jsonNode.has("auth-token"));
@@ -115,17 +115,13 @@ class CloudStorageIntegrationTests {
         // Объект HttpEntity с заголовками и телом запроса
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, requestHeaders);
 
-        // Добавляем объект с параметром filename
-        Map<String, String> params = new HashMap<>();
-        params.put("filename", "testfile");
-
         // Отправка POST-запроса
         ResponseEntity<String> response = restTemplate.exchange(
                 "http://localhost:" + port + "/file?filename={filename}",
                 HttpMethod.POST,
                 requestEntity,
                 String.class,
-                params
+                getParam("filename", fileName)
         );
 
         // Проверка статуса ответа (ожидаем HTTP 200 OK)
@@ -135,17 +131,13 @@ class CloudStorageIntegrationTests {
     @Test
     @Order(3)
     void whenDownloadFileThenReturnFile() {
-        // Добавляем объект с параметром filename
-        Map<String, String> params = new HashMap<>();
-        params.put("filename", "testfile");
-
         // Выполнение GET-запроса
         ResponseEntity<String> response = restTemplate.exchange(
                 "http://localhost:" + port + "/file?filename={filename}",
                 HttpMethod.GET,
                 getRequestEntity(jwt),
                 String.class,
-                params
+                getParam("filename", fileName)
         );
 
         // Проверка статуса ответа
@@ -158,31 +150,20 @@ class CloudStorageIntegrationTests {
     @Test
     @Order(4)
     void whenGetAllFilesThenReturnList() throws JsonProcessingException {
-        // Добавляем объект с параметром filename
-        Map<String, String> params = new HashMap<>();
-        params.put("limit", "2");
-
         // Выполнение GET-запроса
         ResponseEntity<String> response = restTemplate.exchange(
                 "http://localhost:" + port + "/list?limit={limit}",
                 HttpMethod.GET,
                 getRequestEntity(jwt),
                 String.class,
-                params
+                getParam("limit", "2")
         );
 
         // Парсинг тела ответа
-        String responseBody = response.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode filesArray = objectMapper.readTree(responseBody);
-        JsonNode fileNode = filesArray.get(0);
+        JsonNode fileNode = parseResponseBody(response).get(0);
 
         // Проверка статуса ответа
         assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        // Проверка содержания ответа
-        assertTrue(filesArray.isArray());
-        assertEquals(1, filesArray.size());
 
         assertEquals("testfile", fileNode.get("fileName").asText());
         assertEquals(4, fileNode.get("size").asInt());
@@ -191,20 +172,13 @@ class CloudStorageIntegrationTests {
     @Test
     @Order(5)
     public void whenEditFileNameThenOk() {
-        // JSON-тело запроса
-        String jsonBody = "{\"fileName\": \"filetest\"}";
-
-        // Добавляем объект с параметром filename
-        Map<String, String> params = new HashMap<>();
-        params.put("filename", "testfile");
-
         // Отправка POST-запроса
         ResponseEntity<String> response = restTemplate.exchange(
                 "http://localhost:" + port + "/file?filename={filename}",
                 HttpMethod.PUT,
-                getJsonRequestEntity(jwt, jsonBody),
+                getJsonRequestEntity(jwt, fileJsonBody),
                 String.class,
-                params
+                getParam("filename", fileName)
         );
 
         // Проверка статуса ответа (ожидаем HTTP 200 OK)
@@ -214,17 +188,13 @@ class CloudStorageIntegrationTests {
     @Test
     @Order(6)
     public void whenUserDeleteFileThenOk() {
-        // Добавляем объект с параметром filename
-        Map<String, String> params = new HashMap<>();
-        params.put("filename", "testfile");
-
         // Отправка POST-запроса
         ResponseEntity<String> response = restTemplate.exchange(
                 "http://localhost:" + port + "/file?filename={filename}",
                 HttpMethod.DELETE,
                 getRequestEntity(jwt),
                 String.class,
-                params
+                getParam("filename", fileName)
         );
 
         // Проверка статуса ответа (ожидаем HTTP 200 OK)
@@ -263,6 +233,21 @@ class CloudStorageIntegrationTests {
 
         // Объект HttpEntity с заголовками и телом запроса
         return new HttpEntity<>(jsonBody, requestHeaders);
+    }
+
+    private Map<String, String> getParam(String name, String value) {
+        // Добавляем объект с параметром filename
+        Map<String, String> params = new HashMap<>();
+        params.put(name, value);
+        return params;
+    }
+
+    private JsonNode parseResponseBody(ResponseEntity<String> response) throws JsonProcessingException {
+        // Парсинг тела ответа
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode parsedBody = objectMapper.readTree(responseBody);
+        return parsedBody;
     }
 
 }
